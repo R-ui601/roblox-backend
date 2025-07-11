@@ -5,15 +5,14 @@ const { createClient } = require('@supabase/supabase-js');
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.use(express.json()); // Para leer JSON del body en POST
+app.use(express.json());
 
-// Crear cliente de Supabase
 const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_ANON_KEY
 );
 
-// ✅ Ruta POST: guardar datos
+// ✅ Ruta para guardar datos
 app.post('/guardar-datos', async (req, res) => {
   try {
     const { userId, coins, level } = req.body;
@@ -24,10 +23,7 @@ app.post('/guardar-datos', async (req, res) => {
 
     const { data, error } = await supabase
       .from('players_data')
-      .upsert(
-        { user_id: userId, coins: coins, level: level },
-        { onConflict: 'user_id' }
-      );
+      .upsert({ user_id: userId, coins: coins, level: level }, { onConflict: 'user_id' });
 
     if (error) throw error;
 
@@ -37,7 +33,7 @@ app.post('/guardar-datos', async (req, res) => {
   }
 });
 
-// ✅ Ruta GET: obtener datos
+// ✅ Ruta para obtener datos
 app.get('/obtener-datos', async (req, res) => {
   try {
     const { data, error } = await supabase
@@ -52,7 +48,6 @@ app.get('/obtener-datos', async (req, res) => {
   }
 });
 
-// Escuchar en puerto 3000
 app.listen(port, () => {
   console.log(`🚀 Servidor corriendo en http://localhost:${port}`);
 });

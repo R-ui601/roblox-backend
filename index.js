@@ -12,6 +12,11 @@ const supabase = createClient(
   process.env.SUPABASE_ANON_KEY
 );
 
+// Ruta base para verificar si el servidor está activo
+app.get('/', (req, res) => {
+  res.send('✅ Servidor de Roblox activo');
+});
+
 // ✅ Ruta para guardar datos
 app.post('/guardar-datos', async (req, res) => {
   try {
@@ -23,11 +28,11 @@ app.post('/guardar-datos', async (req, res) => {
 
     const { data, error } = await supabase
       .from('players_data')
-      .upsert({ user_id: userId, coins, level }, { onConflict: 'user_id' });
+      .upsert({ user_id: userId, coins: coins, level: level }, { onConflict: 'user_id' });
 
     if (error) throw error;
 
-    res.status(200).json({ message: "Datos guardados correctamente", data });
+    res.status(200).json({ message: "✅ Datos guardados correctamente", data });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -46,11 +51,6 @@ app.get('/obtener-datos', async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
-});
-
-// ✅ Ruta raíz para probar que funciona
-app.get('/', (req, res) => {
-  res.send('Servidor de Roblox activo.');
 });
 
 app.listen(port, () => {

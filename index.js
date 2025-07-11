@@ -23,7 +23,7 @@ app.post('/guardar-datos', async (req, res) => {
 
     const { data, error } = await supabase
       .from('players_data')
-      .upsert({ user_id: userId, coins: coins, level: level }, { onConflict: 'user_id' });
+      .upsert({ user_id: userId, coins, level }, { onConflict: 'user_id' });
 
     if (error) throw error;
 
@@ -46,6 +46,11 @@ app.get('/obtener-datos', async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
+});
+
+// ✅ Ruta raíz para probar que funciona
+app.get('/', (req, res) => {
+  res.send('Servidor de Roblox activo.');
 });
 
 app.listen(port, () => {
